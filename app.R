@@ -44,8 +44,11 @@ ui <- navbarPage("Instream large wood on the River Isonzo", id = 'nav',
 
 # Define the server that performs all necessary operations ----
 server <- function(input, output, session) {
+  print("Server.R is being sourced...")
   source("Server.R", local = TRUE)
+  print("Server.R loaded.")
 }
+
 
 # Run the application ----
 shinyApp(ui, server)
