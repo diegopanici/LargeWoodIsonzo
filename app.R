@@ -1,15 +1,3 @@
-#################################################################
-##           Practical 6 for GEOM184 - Open Source GIS         ##
-##                      27/02/2025                             ##
-##                  Creating a ShinyApp                        ##
-##                         App.R                               ##
-##        code by Diego Panici (d.panici@exeter.ac.uk)         ##
-#################################################################
-
-packages <- c("shiny", "leaflet", "sf", "raster", "ggplot2", "geojsonio", "ggiraph", "RColorBrewer", "terra", "leafem")
-missing <- packages[!(packages %in% installed.packages()[,"Package"])]
-if(length(missing)) install.packages(missing)
-
 # Load packages ----
 library(shiny)
 library(leaflet)
@@ -21,38 +9,32 @@ library(ggiraph)
 library(RColorBrewer)
 library(terra)
 library(leafem)
-
-options(shiny.launch.browser = FALSE)  # Prevent browser launch issues
-options(shiny.maxRequestSize = 1000 * 1024^2)  # Allow large files
-setwd(getwd())  # Force working directory
-
-setwd(dirname(sys.frame(1)$ofile))
-
+options(shiny.maxRequestSize = 1000 * 1024^2)
 
 # Run global script containing all your relevant data ----
 source("Global.R")
 
 # Define UI for visualisation ----
-source("UI.R")
+# Load UI components, making sure they don't return TRUE
+ui_content <- local({
+  source("UI.R", local = TRUE)
+  # Make sure UI.R returns a UI element rather than TRUE
+  # This assumes UI.R is defining a variable or function that returns the UI
+  get("ui_content", envir = environment())
+})
 
 ui <- navbarPage("Instream large wood on the River Isonzo", id = 'nav',
-                 tabPanel("Map", 
-                          div(class="outer",
-                              leafletOutput("map", height = "calc(100vh - 70px)")
-                          )
-                 )
+                 tabPanel("Map", ui_content)
 )
 
-# Define the server that performs all necessary operations ----
+# Define the server that performs all necessary operations with proper scoping ----
 server <- function(input, output, session) {
-  # Print message to confirm server is being sourced
-  print("Server.R is being sourced...")
-
-  # Source the server script
-  source("Server.R", local = TRUE)
-  print("Server.R loaded.")
+  # Create a proper environment for server code to run in
+  local({
+    # Make input, output, and session available to the sourced file
+    source("Server.R", local = TRUE)
+  }, envir = environment())
 }
-
 
 # Run the application ----
 shinyApp(ui, server)
