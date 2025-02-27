@@ -6,18 +6,6 @@
 ##        code by Diego Panici (d.panici@exeter.ac.uk)         ##
 #################################################################
 
-# Load packages as may be needed ----
-library(shiny)
-library(leaflet)
-library(sf)
-library(raster)
-library(ggplot2)
-library(geojsonio)
-library(ggiraph)
-library(RColorBrewer)
-library(terra)
-library(leafem)
-
 # G1 Load large wood, river, and bridge data ----
 lw_points <- st_read("LW_Isonzo.shp")
 river <- st_read("RiverIsonzo.shp")
