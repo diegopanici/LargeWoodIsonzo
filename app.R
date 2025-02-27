@@ -28,11 +28,6 @@ setwd(getwd())  # Force working directory
 
 setwd(dirname(sys.frame(1)$ofile))
 
-print(getwd())  # Check the working directory
-print(file.exists("Server.R"))  # TRUE if Server.R is found, FALSE otherwise
-source("Server.R", local = TRUE)
-print("Server.R successfully sourced!")
-
 
 # Run global script containing all your relevant data ----
 source("Global.R")
