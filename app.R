@@ -22,7 +22,9 @@ library(RColorBrewer)
 library(terra)
 library(leafem)
 
-options(shiny.maxRequestSize = 1000 * 1024^2)
+options(shiny.launch.browser = FALSE)  # Prevent browser launch issues
+options(shiny.maxRequestSize = 1000 * 1024^2)  # Allow large files
+setwd(getwd())  # Force working directory
 
 setwd(dirname(sys.frame(1)$ofile))
 
