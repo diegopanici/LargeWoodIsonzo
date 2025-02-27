@@ -21,6 +21,8 @@ library(leafem)
 
 options(shiny.maxRequestSize = 1000 * 1024^2)
 
+setwd(dirname(sys.frame(1)$ofile))
+
 # Run global script containing all your relevant data ----
 source("Global.R")
 
