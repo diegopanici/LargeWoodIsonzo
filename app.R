@@ -50,7 +50,10 @@ ui <- navbarPage("Instream large wood on the River Isonzo", id = 'nav',
 
 # Define the server that performs all necessary operations ----
 server <- function(input, output, session) {
+  # Print message to confirm server is being sourced
   print("Server.R is being sourced...")
+
+  # Source the server script
   source("Server.R", local = TRUE)
   print("Server.R loaded.")
 }
