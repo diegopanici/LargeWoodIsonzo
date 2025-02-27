@@ -6,6 +6,17 @@
 ##        code by Diego Panici (d.panici@exeter.ac.uk)         ##
 #################################################################
 
+# Load packages as may be needed ----
+library(shiny)
+library(leaflet)
+library(sf)
+library(raster)
+library(ggplot2)
+library(geojsonio)
+library(ggiraph)
+library(RColorBrewer)
+library(terra)
+library(leafem)
 
 # S1 Render leaflet map ----
 output$map <- renderLeaflet({
