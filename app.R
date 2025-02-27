@@ -6,6 +6,9 @@
 ##        code by Diego Panici (d.panici@exeter.ac.uk)         ##
 #################################################################
 
+packages <- c("shiny", "leaflet", "sf", "raster", "ggplot2", "geojsonio", "ggiraph", "RColorBrewer", "terra", "leafem")
+missing <- packages[!(packages %in% installed.packages()[,"Package"])]
+if(length(missing)) install.packages(missing)
 
 # Load packages ----
 library(shiny)
