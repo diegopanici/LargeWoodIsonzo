@@ -8,11 +8,11 @@
 
 
 # G1 Load large wood, river, and bridge data ----
-lw_points <- sf::st_read("LW_Isonzo.shp")
-river <- sf::st_read("RiverIsonzo.shp")
-bridges <- sf::st_read("Bridges_Isonzo.shp")
-clusters <- sf::st_read("IsonzoClusters.shp")
-nearestdist <- sf::st_read("NearestDistIsonzo.shp")
+lw_points <- st_read("LW_Isonzo.shp")
+river <- st_read("RiverIsonzo.shp")
+bridges <- st_read("Bridges_Isonzo.shp")
+clusters <- st_read("IsonzoClusters.shp")
+nearestdist <- st_read("NearestDistIsonzo.shp")
 
 #Convert vectors to CRS 4326
 
@@ -27,7 +27,7 @@ num_clusters <- length(unique(clusters$CLUSTER_ID))
 pal_clusters <- colorFactor(palette = colorRampPalette(brewer.pal(12, "Paired"))(num_clusters), domain = clusters$CLUSTER_ID)
 
 
-heatmap <- rast("Heatmap.tif")
+heatmap <- rast("Heatmap_lowres.tif")
 heatmap <- project(heatmap, "EPSG:4326")  # Project to WGS84
 heatmap<- raster(heatmap)
 
