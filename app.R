@@ -15,25 +15,60 @@ options(shiny.maxRequestSize = 1000 * 1024^2)
 source("Global.R")
 
 # Define UI for visualisation ----
-# Load UI components, making sure they don't return TRUE
-ui_content <- local({
-  source("UI.R", local = TRUE)
-  # Make sure UI.R returns a UI element rather than TRUE
-  # This assumes UI.R is defining a variable or function that returns the UI
-  get("ui_content", envir = environment())
-})
-
 ui <- navbarPage("Instream large wood on the River Isonzo", id = 'nav',
-                 tabPanel("Map", ui_content)
+                 tabPanel("Map", 
+                         div(class="outer",
+                             leafletOutput("map", height = "calc(100vh - 70px)")
+                         )
+                 )
 )
 
-# Define the server that performs all necessary operations with proper scoping ----
+# Define the server that performs all necessary operations ----
 server <- function(input, output, session) {
-  # Create a proper environment for server code to run in
-  local({
-    # Make input, output, and session available to the sourced file
-    source("Server.R", local = TRUE)
-  }, envir = environment())
+  # S1 Render leaflet map ----
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      setView(lng=13.533545, lat=45.850065, zoom=11.3) %>%
+      addProviderTiles(providers$OpenStreetMap, group = "Colour") %>%
+      addPolylines(data = river, color = "blue", weight = 2, opacity = 0.8, group = "River") %>%
+      addCircles(data = bridges, color = "black", fillColor="purple", fillOpacity=0.8, 
+                 weight = 2, radius = 50, group = "Bridges") %>%
+      addPolylines(data = nearestdist, color = "black", weight = 2, opacity = 0.8, 
+                   group = "Nearest distance") %>%
+      addRasterImage(heatmap, colors = pal_heatmap, opacity = 0.7, group = "Heatmap") %>%
+      addImageQuery(
+        heatmap,
+        layerId = "Heatmap",
+        prefix = "Value: ",
+        digits = 2,
+        position = "topright",
+        type = "mousemove",
+        options = queryOptions(
+          position = "topright"
+        ),
+        group = "Heatmap"
+      ) %>%
+      addLayersControl(
+        baseGroups = c("Colour"),
+        overlayGroups = c("River", "Bridges", "Nearest distance", "Large Wood", "Heatmap"),
+        options = layersControlOptions(collapsed = TRUE)
+      )
+  })
+  
+  # Add popups for large wood points
+  observe({
+    invisible(
+      leafletProxy("map") %>%
+        clearMarkers() %>%
+        addCircleMarkers(data = clusters, fillColor = ~pal_clusters(CLUSTER_ID), color = "black", 
+                        weight = 1, radius = 5, stroke = TRUE, fillOpacity = 0.8,
+                        popup = ~paste("<b>Type:</b>", Type, "<br><b>Imagery used:</b>", Imagery, "<br><b>Cluster ID:</b>", CLUSTER_ID),
+                        group = "Large Wood") %>%
+        addCircleMarkers(data = bridges, color = "black", radius = 3, stroke = TRUE, fillOpacity = 0.8,
+                        popup = ~paste("<b>Bridge:</b>", Name),
+                        group = "Bridges")
+    )
+  })
 }
 
 # Run the application ----
