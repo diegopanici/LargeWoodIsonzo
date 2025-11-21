@@ -41,12 +41,13 @@ pal_clusters <- colorFactor(palette = colorRampPalette(brewer.pal(12, "Paired"))
 
 
 #Then add raster files
-heatmap <- rast("heatmap.tif")
+heatmap <- rast("Heatmap_lowres.tif")
 heatmap <- project(heatmap, "EPSG:4326")  # Project to WGS84
 #heatmap<- raster(heatmap)
 
 
 pal_heatmap <- colorNumeric(palette = "inferno", domain = na.omit(values(heatmap)), na.color = "transparent")
+
 
 
 
