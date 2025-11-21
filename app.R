@@ -31,6 +31,8 @@ server <- function(input, output, session) {
       setView(lng=13.533545, lat=45.850065, zoom=11.3) %>%
       addProviderTiles(providers$OpenStreetMap, group = "Colour") %>%
       addPolylines(data = river, color = "blue", weight = 2, opacity = 0.8, group = "River") %>%
+      addCircles(data = bridges, color = "black", fillColor="purple", fillOpacity=0.8, 
+                 weight = 2, radius = 50, group = "Bridges") %>%
       addPolylines(data = nearestdist, color = "black", weight = 2, opacity = 0.8, 
                    group = "Nearest distance") %>%
       addRasterImage(heatmap, colors = pal_heatmap, opacity = 0.7, group = "Heatmap") %>%
@@ -46,7 +48,17 @@ server <- function(input, output, session) {
         ),
         group = "Heatmap"
       ) %>%
-      # Add cluster markers directly here
+      addLayersControl(
+        baseGroups = c("Colour"),
+        overlayGroups = c("River", "Bridges", "Nearest distance", "Large Wood", "Heatmap"),
+        options = layersControlOptions(collapsed = TRUE)
+      )
+  })
+  
+  # Add popups for large wood points - wait for map to be ready
+  observeEvent(input$map_zoom, {
+    leafletProxy("map") %>%
+      clearMarkers() %>%
       addCircleMarkers(data = clusters, 
                        fillColor = ~pal_clusters(CLUSTER_ID), 
                        color = "black", 
@@ -58,24 +70,17 @@ server <- function(input, output, session) {
                                       "<br><b>Imagery used:</b>", Imagery, 
                                       "<br><b>Cluster ID:</b>", CLUSTER_ID),
                        group = "Large Wood") %>%
-      # Add bridge markers directly here (since you already have addCircles for bridges above, 
-      # you might want to remove the duplicate or combine them)
       addCircleMarkers(data = bridges, 
                        color = "black", 
                        radius = 3, 
                        stroke = TRUE, 
                        fillOpacity = 0.8,
                        popup = ~paste("<b>Bridge:</b>", Name),
-                       group = "Bridges") %>%
-      addLayersControl(
-        baseGroups = c("Colour"),
-        overlayGroups = c("River", "Bridges", "Nearest distance", "Large Wood", "Heatmap"),
-        options = layersControlOptions(collapsed = TRUE)
-      )
-  })
+                       group = "Bridges")
+  }, ignoreNULL = TRUE, once = TRUE)
 }
-
 # Run the application ----
 shinyApp(ui, server)
+
 
 
