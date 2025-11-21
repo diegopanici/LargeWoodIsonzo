@@ -57,7 +57,6 @@ server <- function(input, output, session) {
   
   # Add popups for large wood points
   observe({
-    invisible(
       leafletProxy("map") %>%
         clearMarkers() %>%
         addCircleMarkers(data = clusters, fillColor = ~pal_clusters(CLUSTER_ID), color = "black", 
@@ -67,9 +66,9 @@ server <- function(input, output, session) {
         addCircleMarkers(data = bridges, color = "black", radius = 3, stroke = TRUE, fillOpacity = 0.8,
                         popup = ~paste("<b>Bridge:</b>", Name),
                         group = "Bridges")
-    )
   })
 }
 
 # Run the application ----
 shinyApp(ui, server)
+
