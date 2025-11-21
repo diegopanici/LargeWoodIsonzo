@@ -4,7 +4,7 @@ library(sf)
 library(raster)
 library(ggplot2)
 library(geojsonio)
-library(ggiraph)
+#library(ggiraph)
 library(RColorBrewer)
 library(terra)
 library(leafem)
@@ -96,3 +96,4 @@ server <- function(input, output, session) {
 
 # Run the application
 shinyApp(ui, server)
+
