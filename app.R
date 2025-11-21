@@ -27,9 +27,10 @@ ui <- navbarPage("Instream large wood on the River Isonzo", id = 'nav',
 
 # Define server
 server <- function(input, output, session) {
-  source("Server.R", local = TRUE)
+  source("Server.R", local = environment())
 }
 
 # Run the application
 shinyApp(ui, server)
+
 
